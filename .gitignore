@@ -40,3 +40,8 @@ Thumbs.db
 
 # Large Archives (Keep repo lightweight; ZIP is packaged separately)
 *.zip
+
+# Local Viva Guides & Exam Documents
+*Viva_Guide*
+*.pdf
+
