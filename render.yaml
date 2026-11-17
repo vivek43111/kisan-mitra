@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: kisan-mitra-orders-service
+    runtime: node
+    rootDir: orders-service
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: free
+
+  - type: web
+    name: kisan-mitra-ai-service
+    runtime: node
+    rootDir: ai-service
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: free
