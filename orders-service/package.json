@@ -1,0 +1,19 @@
+{
+  "name": "kisan-mitra-orders-service",
+  "version": "1.0.0",
+  "description": "CS543 Assignments 4-6: Kisan Mitra Orders Microservice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}

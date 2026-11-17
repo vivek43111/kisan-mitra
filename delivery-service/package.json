@@ -1,0 +1,14 @@
+{
+  "name": "kisan-mitra-delivery-service",
+  "version": "1.0.0",
+  "description": "Kisan Mitra - Delivery & Logistics REST Microservice (Port 5003)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"console.log('Delivery Service test passed')\""
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

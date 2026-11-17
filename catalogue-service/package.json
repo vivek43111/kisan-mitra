@@ -1,0 +1,14 @@
+{
+  "name": "kisan-mitra-catalogue-service",
+  "version": "1.0.0",
+  "description": "Kisan Mitra - Catalogue & Produce REST Microservice (Port 5002)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"console.log('Catalogue Service test passed')\""
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

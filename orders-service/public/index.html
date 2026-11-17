@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kisan Mitra — CS543 Web Services Live Demonstration Portal</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    pre, code, .code-font { font-family: 'JetBrains Mono', monospace; }
+    .badge-2xx { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .badge-3xx { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+    .badge-4xx { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .badge-5xx { background: #ffedd5; color: #c2410c; border: 1px solid #fdba74; }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <span class="text-3xl">🌾</span>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold tracking-tight">Kisan Mitra</h1>
+            <span class="bg-emerald-500/30 text-emerald-200 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-emerald-400/40">CS543 Demonstration Portal</span>
+          </div>
+          <p class="text-xs text-emerald-200/80">Farmer-to-Consumer Agricultural Produce Platform · IIIT Vadodara</p>
+        </div>
+      </div>
+
+      <!-- Team Details & Server Status -->
+      <div class="flex items-center space-x-4 text-xs">
+        <div class="hidden md:flex flex-col text-right text-emerald-100">
+          <span class="font-medium text-white">Vivek Kumar (20251651104)</span>
+          <span class="text-emerald-300 text-[11px]">Dipesh · Suraj · Sandeep</span>
+        </div>
+        <div class="h-8 w-px bg-emerald-700/60 hidden md:block"></div>
+        <div class="flex items-center bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-700/50">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
+          <span class="font-mono text-[11px] text-emerald-200">Port 5000: ONLINE</span>
+        </div>
+        <a href="/docs" target="_blank" class="bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded-lg text-xs transition border border-white/20 flex items-center gap-1.5">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          Swagger Docs
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 border-t border-emerald-700/40 pt-1">
+      <button onclick="switchTab('marketplace')" id="tab-btn-marketplace" class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-white text-white flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-4 h-4"></i> Marketplace &amp; Orders
+      </button>
+      <button onclick="switchTab('protocol')" id="tab-btn-protocol" class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-emerald-200 hover:text-white flex items-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> Faculty Protocol Lab (A04–A06)
+      </button>
+      <button onclick="switchTab('orders')" id="tab-btn-orders" class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-emerald-200 hover:text-white flex items-center gap-2">
+        <i data-lucide="list-checks" class="w-4 h-4"></i> Active Orders Store
+      </button>
+      <button onclick="switchTab('assignments')" id="tab-btn-assignments" class="tab-btn px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-emerald-200 hover:text-white flex items-center gap-2">
+        <i data-lucide="folder-git-2" class="w-4 h-4"></i> CS543 Assignment Hub
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- TAB 1: MARKETPLACE & LIVE ORDERING -->
+    <section id="tab-marketplace" class="tab-pane space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="store" class="w-5 h-5 text-emerald-600"></i> Direct Farmer Produce Marketplace
+            </h2>
+            <p class="text-sm text-slate-500">Select produce from regional farmers and place an order using the live backend REST service.</p>
+          </div>
+          <span class="text-xs font-mono bg-slate-100 text-slate-700 px-3 py-1 rounded-md border border-slate-300">Target: POST /orders</span>
+        </div>
+
+        <!-- Produce Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <!-- Item 1 -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-emerald-500 transition hover:shadow-md bg-slate-50/50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="text-2xl">🌾</span>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">In Stock</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2">Sharbati Wheat</h3>
+              <p class="text-xs text-slate-500">Anand Organic Mandi, Gujarat</p>
+              <div class="mt-2 text-sm font-semibold text-emerald-700">₹35.00 <span class="text-xs font-normal text-slate-500">/ kg</span></div>
+            </div>
+            <div class="mt-4 flex items-center justify-between pt-3 border-t border-slate-200">
+              <span class="text-xs text-slate-600 font-medium">Quantity (kg):</span>
+              <div class="flex items-center space-x-2">
+                <button onclick="changeQty('PROD-WHEAT-01', -5)" class="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 font-bold text-sm">-</button>
+                <span id="qty-PROD-WHEAT-01" class="font-mono text-sm w-6 text-center font-bold">10</span>
+                <button onclick="changeQty('PROD-WHEAT-01', 5)" class="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 font-bold text-sm">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-emerald-500 transition hover:shadow-md bg-slate-50/50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="text-2xl">🍚</span>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">In Stock</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2">Basmati Paddy Rice</h3>
+              <p class="text-xs text-slate-500">Navsari Rural APMC</p>
+              <div class="mt-2 text-sm font-semibold text-emerald-700">₹60.00 <span class="text-xs font-normal text-slate-500">/ kg</span></div>
+            </div>
+            <div class="mt-4 flex items-center justify-between pt-3 border-t border-slate-200">
+              <span class="text-xs text-slate-600 font-medium">Quantity (kg):</span>
+              <div class="flex items-center space-x-2">
+                <button onclick="changeQty('PROD-RICE-02', -5)" class="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 font-bold text-sm">-</button>
+                <span id="qty-PROD-RICE-02" class="font-mono text-sm w-6 text-center font-bold">5</span>
+                <button onclick="changeQty('PROD-RICE-02', 5)" class="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 font-bold text-sm">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-emerald-500 transition hover:shadow-md bg-slate-50/50 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="text-2xl">🌻</span>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">In Stock</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2">Yellow Mustard Seeds</h3>
+              <p class="text-xs text-slate-500">Mehsana Agro Producers</p>
+              <div class="mt-2 text-sm font-semibold text-emerald-700">₹75.00 <span class="text-xs font-normal text-slate-500">/ kg</span></div>
+            </div>
+            <div class="mt-4 flex items-center justify-between pt-3 border-t border-slate-200">
+              <span class="text-xs text-slate-600 font-medium">Quantity (kg):</span>
+              <div class="flex items-center space-x-2">
+                <button onclick="changeQty('PROD-MUSTARD-01', -5)" class="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 font-bold text-sm">-</button>
+                <span id="qty-PROD-MUSTARD-01" class="font-mono text-sm w-6 text-center font-bold">0</span>
+                <button onclick="changeQty('PROD-MUSTARD-01', 5)" class="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 font-bold text-sm">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 4 (Out of Stock trigger for 409 test) -->
+          <div class="border border-red-200 rounded-lg p-4 bg-red-50/40 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="text-2xl">🌱</span>
+                <span class="text-xs bg-red-100 text-red-800 font-semibold px-2 py-0.5 rounded">Out of Stock</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2">Organic Cotton Pods</h3>
+              <p class="text-xs text-slate-500">Saurashtra Farmers Co-op</p>
+              <div class="mt-2 text-sm font-semibold text-slate-500">₹110.00 <span class="text-xs font-normal text-slate-500">/ kg</span></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-red-200 flex items-center justify-between">
+              <span class="text-xs text-red-700 font-medium">Triggers 409:</span>
+              <button onclick="selectOutOfStock()" class="text-xs bg-red-600 hover:bg-red-700 text-white font-medium px-2 py-1 rounded">Select Item</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Bar -->
+        <div class="bg-slate-100 rounded-lg p-4 border border-slate-200 flex flex-col lg:flex-row items-center justify-between gap-4">
+          <div class="w-full lg:w-1/2">
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Destination Mandi / Delivery Address:</label>
+            <input type="text" id="order-address" value="APMC Main Market Yard Gate 2, Surat, Gujarat" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+          </div>
+
+          <div class="flex items-center space-x-6 w-full lg:w-auto justify-end">
+            <div class="text-right">
+              <div class="text-xs text-slate-500">Calculated Total:</div>
+              <div id="cart-total" class="text-xl font-bold text-emerald-800">₹650.00</div>
+            </div>
+            <button onclick="placeLiveOrder()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Place Live Order
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PROTOCOL LAB (A04 - A06) -->
+    <section id="tab-protocol" class="tab-pane hidden space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="cpu" class="w-5 h-5 text-indigo-600"></i> CS543 Faculty Protocol Lab
+          </h2>
+          <p class="text-sm text-slate-500">One-click live tests demonstrating the exact Web Services requirements demanded by Dr. Pramit Mazumdar.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <!-- Lab 1: Safe Retry & Idempotency -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">A04 Task C7 / A05 C3</span>
+                <span class="text-xs font-semibold text-slate-500">201 Cached</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2 text-sm">Safe Retry (Idempotency-Key)</h3>
+              <p class="text-xs text-slate-600 mt-1">Sends identical POST twice with same Idempotency-Key. Proves server caches response and creates 0 duplicate orders.</p>
+            </div>
+            <button onclick="runLabTest('idempotency')" class="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Test Idempotent Retry
+            </button>
+          </div>
+
+          <!-- Lab 2: Conditional GET (ETag / 304) -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">A05 Tasks B4, C1</span>
+                <span class="text-xs font-semibold text-slate-500">304 Not Modified</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2 text-sm">Conditional Read (If-None-Match)</h3>
+              <p class="text-xs text-slate-600 mt-1">Queries order with matching ETag. Demonstrates HTTP 304 response with zero body bytes transferred.</p>
+            </div>
+            <button onclick="runLabTest('etag-read')" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Test Conditional 304
+            </button>
+          </div>
+
+          <!-- Lab 3: Concurrency Control (If-Match / 412) -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">A05 Task C2</span>
+                <span class="text-xs font-semibold text-slate-500">412 Precondition Failed</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2 text-sm">Lost Update Prevention (If-Match)</h3>
+              <p class="text-xs text-slate-600 mt-1">Sends PATCH with a stale ETag. Server rejects modification to prevent concurrent overwriting.</p>
+            </div>
+            <button onclick="runLabTest('concurrency-write')" class="mt-4 w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Test Concurrency 412
+            </button>
+          </div>
+
+          <!-- Lab 4: RFC 7807 Multi-Field 422 -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded">A06 Tasks B3, C2</span>
+                <span class="text-xs font-semibold text-slate-500">422 Problem Details</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2 text-sm">Multi-Field Validation Error</h3>
+              <p class="text-xs text-slate-600 mt-1">Sends empty address and quantity 0. Collects all errors into RFC 7807 errors[] list before rejecting.</p>
+            </div>
+            <button onclick="runLabTest('validation-error')" class="mt-4 w-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Test 422 Error Collector
+            </button>
+          </div>
+
+          <!-- Lab 5: Non-CRUD State Action (Cancel 202/200) -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">A05 Task A2 / A3</span>
+                <span class="text-xs font-semibold text-slate-500">202 Accepted</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2 text-sm">Action Sub-Resource Cancellation</h3>
+              <p class="text-xs text-slate-600 mt-1">Invokes POST /orders/:id/cancel. Returns 202 Accepted initially and 200 OK if retried (safe transition).</p>
+            </div>
+            <button onclick="runLabTest('cancel-order')" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Test Cancel Action
+            </button>
+          </div>
+
+          <!-- Lab 6: Content Negotiation (XML / 406) -->
+          <div class="border border-slate-200 rounded-lg p-4 hover:border-indigo-400 transition bg-slate-50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-teal-700 bg-teal-100 px-2 py-0.5 rounded">A06 Task C3</span>
+                <span class="text-xs font-semibold text-slate-500">XML &amp; 406</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-2 text-sm">Content Negotiation (Accept: XML)</h3>
+              <p class="text-xs text-slate-600 mt-1">Demands application/xml. Server serializes the same internal Order record into valid XML.</p>
+            </div>
+            <button onclick="runLabTest('xml-negotiate')" class="mt-4 w-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i> Test XML Negotiation
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ACTIVE ORDERS STORE -->
+    <section id="tab-orders" class="tab-pane hidden space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="database" class="w-5 h-5 text-emerald-600"></i> Active Orders in Store
+            </h2>
+            <p class="text-sm text-slate-500">Live in-memory store representation with ETag hashes and isolated representation fields.</p>
+          </div>
+          <button onclick="refreshOrdersTable()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-md border border-slate-300 flex items-center gap-1">
+            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th class="py-3 px-4">Order ID</th>
+                <th class="py-3 px-4">Buyer</th>
+                <th class="py-3 px-4">Produce Items</th>
+                <th class="py-3 px-4">Total Amount</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">ETag</th>
+                <th class="py-3 px-4 text-right">Live Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body" class="divide-y divide-slate-200">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ASSIGNMENT HUB -->
+    <section id="tab-assignments" class="tab-pane hidden space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-600"></i> CS543 Deliverables Matrix (Assignments 1–6)
+          </h2>
+          <p class="text-sm text-slate-500">Quick access to all submission artifacts, WSDL contracts, OpenAPI specs, and reflection notes.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+            <div class="font-bold text-slate-900 text-sm">Assignment 1: HTTP by Hand</div>
+            <p class="text-xs text-slate-500 mt-1">Project setup, curl logs, network analysis, and system brief.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">brief.md</span>
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">http-log.md</span>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+            <div class="font-bold text-slate-900 text-sm">Assignment 2: Services &amp; Schema</div>
+            <p class="text-xs text-slate-500 mt-1">Contracts, boundary rules, draw.io diagrams, schema DDL.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">contracts.md</span>
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">schema.sql</span>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+            <div class="font-bold text-slate-900 text-sm">Assignment 3: SOAP Integration</div>
+            <p class="text-xs text-slate-500 mt-1">KisanPay WSDL 1.1, hand-crafted SOAP XML envelopes, and integration guide.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">partner.wsdl</span>
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">soap-request.xml</span>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+            <div class="font-bold text-slate-900 text-sm">Assignment 4: REST Rebuilding</div>
+            <p class="text-xs text-slate-500 mt-1">OpenAPI 3.0 specification, resource table, retry hardening, NOTES.md.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <a href="/openapi.yaml" target="_blank" class="bg-emerald-100 text-emerald-800 font-semibold border px-2 py-1 rounded hover:bg-emerald-200">openapi.yaml</a>
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">NOTES.md</span>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+            <div class="font-bold text-slate-900 text-sm">Assignment 5: Methods &amp; Headers</div>
+            <p class="text-xs text-slate-500 mt-1">ETags, Conditional 304/412, Rate-limiting, CORS, 8 reflection answers.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">curl-transcript.txt</span>
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">NOTES.md</span>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+            <div class="font-bold text-slate-900 text-sm">Assignment 6: Honest Responses</div>
+            <p class="text-xs text-slate-500 mt-1">RFC 7807 Problem Details, multi-field 422 validator, XML negotiation.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs">
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">transcript.txt</span>
+              <span class="bg-white border px-2 py-1 rounded text-slate-700">NOTES.md</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LIVE PROTOCOL INSPECTOR CONSOLE ================= -->
+    <div class="bg-slate-900 text-slate-100 rounded-xl shadow-lg border border-slate-800 overflow-hidden">
+      <!-- Console Header -->
+      <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500"></span>
+          <span class="ml-2 text-xs font-mono font-semibold text-slate-300">Live HTTP Inspector &amp; Protocol Stream</span>
+        </div>
+        <div id="inspector-badge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-slate-800 text-slate-400">
+          IDLE · WAITING FOR REQUEST
+        </div>
+      </div>
+
+      <!-- Console Body -->
+      <div class="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 text-xs font-mono">
+        <!-- Request Column -->
+        <div class="lg:col-span-5 space-y-2 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-4">
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold flex items-center justify-between">
+            <span>Outgoing HTTP Request:</span>
+            <span id="req-method-badge" class="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded">METHOD</span>
+          </div>
+          <div id="req-url" class="text-emerald-400 font-bold break-all">http://localhost:5000/...</div>
+          
+          <div class="text-[11px] text-slate-400 font-bold mt-2">Request Headers:</div>
+          <pre id="req-headers" class="bg-slate-950/80 p-2 rounded text-slate-300 overflow-x-auto text-[11px] border border-slate-800/80 leading-relaxed">(No request sent yet)</pre>
+
+          <div class="text-[11px] text-slate-400 font-bold mt-2">Request Body:</div>
+          <pre id="req-body" class="bg-slate-950/80 p-2 rounded text-slate-300 overflow-x-auto text-[11px] border border-slate-800/80 leading-relaxed">(empty)</pre>
+        </div>
+
+        <!-- Response Column -->
+        <div class="lg:col-span-7 space-y-2">
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold flex items-center justify-between">
+            <span>Server HTTP Response:</span>
+            <span id="res-status-badge" class="px-2 py-0.5 rounded font-bold">STATUS</span>
+          </div>
+          
+          <div class="text-[11px] text-slate-400 font-bold">Response Headers:</div>
+          <pre id="res-headers" class="bg-slate-950/80 p-2 rounded text-slate-300 overflow-x-auto text-[11px] border border-slate-800/80 leading-relaxed">(No response received yet)</pre>
+
+          <div class="text-[11px] text-slate-400 font-bold">Response Payload:</div>
+          <pre id="res-body" class="bg-slate-950/80 p-3 rounded text-emerald-300 overflow-x-auto text-[11px] border border-slate-800/80 leading-relaxed max-h-60 overflow-y-auto font-mono">// Execute any action above to watch live protocol packets arrive</pre>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('border-white', 'text-white');
+        el.classList.add('border-transparent', 'text-emerald-200');
+      });
+
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      activeBtn.classList.remove('border-transparent', 'text-emerald-200');
+      activeBtn.classList.add('border-white', 'text-white');
+
+      if (tabId === 'orders') refreshOrdersTable();
+    }
+
+    // Produce Quantities & Total Calculation
+    const catalog = {
+      'PROD-WHEAT-01': { price: 35, qty: 10 },
+      'PROD-RICE-02': { price: 60, qty: 5 },
+      'PROD-MUSTARD-01': { price: 75, qty: 0 }
+    };
+
+    function changeQty(productId, delta) {
+      if (!catalog[productId]) return;
+      catalog[productId].qty = Math.max(0, catalog[productId].qty + delta);
+      document.getElementById('qty-' + productId).innerText = catalog[productId].qty;
+      updateTotal();
+    }
+
+    function updateTotal() {
+      let total = 0;
+      for (const key in catalog) {
+        total += catalog[key].qty * catalog[key].price;
+      }
+      document.getElementById('cart-total').innerText = '₹' + total.toFixed(2);
+    }
+
+    function selectOutOfStock() {
+      catalog['PROD-OUT-OF-STOCK'] = { price: 110, qty: 1 };
+      alert('Selected "Organic Cotton Pods (PROD-OUT-OF-STOCK)". Placing an order now will trigger HTTP 409 Conflict!');
+    }
+
+    // Live Order Placement
+    async function placeLiveOrder() {
+      const items = [];
+      for (const [id, item] of Object.entries(catalog)) {
+        if (item.qty > 0) {
+          items.push({ productId: id, quantity: item.qty, pricePerKg: item.price });
+        }
+      }
+
+      const address = document.getElementById('order-address').value;
+      const idempotencyKey = 'km-ui-' + Date.now();
+      const payload = { deliveryAddress: address, items: items };
+
+      logRequest('POST', '/orders', {
+        'Authorization': 'Bearer km_faculty_demo_token_2026',
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+        'Accept': 'application/json'
+      }, payload);
+
+      try {
+        const response = await fetch('/orders', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer km_faculty_demo_token_2026',
+            'Content-Type': 'application/json',
+            'Idempotency-Key': idempotencyKey,
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        logResponse(response, data);
+        refreshOrdersTable();
+      } catch (err) {
+        alert('Network Error: ' + err.message);
+      }
+    }
+
+    // Protocol Lab Scenarios
+    async function runLabTest(testType) {
+      if (testType === 'idempotency') {
+        const key = 'idem-test-' + Math.floor(Math.random() * 10000);
+        const payload = {
+          deliveryAddress: 'Farmgate Test Mandi',
+          items: [{ productId: 'PROD-WHEAT-01', quantity: 5, pricePerKg: 35 }]
+        };
+
+        alert('Step 1: Sending first POST with key: ' + key);
+        logRequest('POST', '/orders', { 'Authorization': 'Bearer token', 'Idempotency-Key': key }, payload);
+        const res1 = await fetch('/orders', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer token', 'Content-Type': 'application/json', 'Idempotency-Key': key },
+          body: JSON.stringify(payload)
+        });
+        const data1 = await res1.json();
+        logResponse(res1, data1);
+
+        setTimeout(async () => {
+          alert('Step 2: Sending REPEAT POST with IDENTICAL key: ' + key + '\nWatch server return cached response!');
+          logRequest('POST', '/orders (REPEAT CALL)', { 'Authorization': 'Bearer token', 'Idempotency-Key': key }, payload);
+          const res2 = await fetch('/orders', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer token', 'Content-Type': 'application/json', 'Idempotency-Key': key },
+            body: JSON.stringify(payload)
+          });
+          const data2 = await res2.json();
+          logResponse(res2, data2);
+        }, 1500);
+
+      } else if (testType === 'etag-read') {
+        // Fetch order 1 first to get etag
+        const first = await fetch('/orders/1');
+        const etag = first.headers.get('etag');
+
+        logRequest('GET', '/orders/1', { 'If-None-Match': etag }, null);
+        const res = await fetch('/orders/1', {
+          headers: { 'If-None-Match': etag }
+        });
+        logResponse(res, '(Empty Body - 304 Not Modified)');
+
+      } else if (testType === 'concurrency-write') {
+        logRequest('PATCH', '/orders/1', { 'Authorization': 'Bearer token', 'If-Match': '"stale_hash_99999"' }, { deliveryAddress: 'Colliding Update' });
+        const res = await fetch('/orders/1', {
+          method: 'PATCH',
+          headers: {
+            'Authorization': 'Bearer token',
+            'Content-Type': 'application/json',
+            'If-Match': '"stale_hash_99999"'
+          },
+          body: JSON.stringify({ deliveryAddress: 'Colliding Update' })
+        });
+        const data = await res.json();
+        logResponse(res, data);
+
+      } else if (testType === 'validation-error') {
+        const payload = { deliveryAddress: '', items: [{ productId: '', quantity: 0 }] };
+        logRequest('POST', '/orders', { 'Authorization': 'Bearer token' }, payload);
+        const res = await fetch('/orders', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer token', 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        logResponse(res, data);
+
+      } else if (testType === 'cancel-order') {
+        logRequest('POST', '/orders/1/cancel', { 'Authorization': 'Bearer token' }, { reason: 'Farmer delayed dispatch' });
+        const res = await fetch('/orders/1/cancel', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer token', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: 'Farmer delayed dispatch' })
+        });
+        const data = await res.json();
+        logResponse(res, data);
+        refreshOrdersTable();
+
+      } else if (testType === 'xml-negotiate') {
+        logRequest('GET', '/orders/1', { 'Accept': 'application/xml' }, null);
+        const res = await fetch('/orders/1', {
+          headers: { 'Accept': 'application/xml' }
+        });
+        const text = await res.text();
+        logResponse(res, text, true);
+      }
+    }
+
+    // Refresh Orders Table
+    async function refreshOrdersTable() {
+      try {
+        const res = await fetch('/orders');
+        const orders = await res.json();
+        const tbody = document.getElementById('orders-table-body');
+        tbody.innerHTML = '';
+
+        orders.forEach(order => {
+          const itemsSummary = order.items.map(i => `${i.productId} (${i.quantity}kg)`).join(', ');
+          let statusBadge = '<span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-semibold">Pending</span>';
+          if (order.status === 'cancelled') statusBadge = '<span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded font-semibold">Cancelled</span>';
+          if (order.status === 'shipped') statusBadge = '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-semibold">Shipped</span>';
+
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition';
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono font-bold text-slate-900">#${order.id}</td>
+            <td class="py-3 px-4 text-slate-600">${order.buyerId}</td>
+            <td class="py-3 px-4 text-slate-800 text-xs">${itemsSummary}</td>
+            <td class="py-3 px-4 font-bold text-emerald-700">₹${order.totalAmount}</td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4 font-mono text-[11px] text-slate-500">ETag cached</td>
+            <td class="py-3 px-4 text-right space-x-2">
+              <button onclick="inspectOrder('${order.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded">View JSON</button>
+              <button onclick="cancelOrderPrompt('${order.id}')" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 px-2 py-1 rounded">Cancel</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function inspectOrder(id) {
+      logRequest('GET', '/orders/' + id, { 'Accept': 'application/json' }, null);
+      const res = await fetch('/orders/' + id);
+      const data = await res.json();
+      logResponse(res, data);
+    }
+
+    async function cancelOrderPrompt(id) {
+      logRequest('POST', `/orders/${id}/cancel`, { 'Authorization': 'Bearer token' }, { reason: 'UI cancellation' });
+      const res = await fetch(`/orders/${id}/cancel`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer token', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: 'UI cancellation' })
+      });
+      const data = await res.json();
+      logResponse(res, data);
+      refreshOrdersTable();
+    }
+
+    // Protocol Inspector Logging Helpers
+    function logRequest(method, path, headers, body) {
+      document.getElementById('req-method-badge').innerText = method;
+      document.getElementById('req-url').innerText = 'http://localhost:5000' + path;
+
+      let headersStr = '';
+      for (const [k, v] of Object.entries(headers)) {
+        headersStr += `${k}: ${v}\n`;
+      }
+      document.getElementById('req-headers').innerText = headersStr || '(No special headers)';
+      document.getElementById('req-body').innerText = body ? JSON.stringify(body, null, 2) : '(Empty Body)';
+      
+      document.getElementById('inspector-badge').innerText = 'PROCESSING REQUEST...';
+      document.getElementById('inspector-badge').className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-amber-900 text-amber-200 animate-pulse';
+    }
+
+    function logResponse(response, data, isXml = false) {
+      const status = response.status;
+      const statusText = response.statusText || '';
+      const badge = document.getElementById('res-status-badge');
+      badge.innerText = `${status} ${statusText}`;
+
+      if (status >= 200 && status < 300) badge.className = 'px-2 py-0.5 rounded font-bold badge-2xx';
+      else if (status >= 300 && status < 400) badge.className = 'px-2 py-0.5 rounded font-bold badge-3xx';
+      else if (status >= 400 && status < 500) badge.className = 'px-2 py-0.5 rounded font-bold badge-4xx';
+      else badge.className = 'px-2 py-0.5 rounded font-bold badge-5xx';
+
+      let headersStr = '';
+      for (const [k, v] of response.headers.entries()) {
+        headersStr += `${k}: ${v}\n`;
+      }
+      document.getElementById('res-headers').innerText = headersStr;
+
+      if (isXml || typeof data === 'string') {
+        document.getElementById('res-body').innerText = data;
+      } else {
+        document.getElementById('res-body').innerText = JSON.stringify(data, null, 2);
+      }
+
+      document.getElementById('inspector-badge').innerText = `EXCHANGE COMPLETE · ${status}`;
+      document.getElementById('inspector-badge').className = 'text-xs font-mono font-bold px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-300';
+    }
+
+    // Auto-fetch on load
+    refreshOrdersTable();
+  </script>
+</body>
+</html>

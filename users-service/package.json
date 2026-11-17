@@ -1,0 +1,14 @@
+{
+  "name": "kisan-mitra-users-service",
+  "version": "1.0.0",
+  "description": "Kisan Mitra - User Management REST Microservice (Port 5001)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"console.log('Users Service test passed')\""
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

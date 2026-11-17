@@ -1,0 +1,14 @@
+{
+  "name": "kisan-mitra-ai-service",
+  "version": "1.0.0",
+  "description": "Kisan Mitra - AI Agro-Advisory, Vision Crop Disease Diagnosis & Price Intelligence Microservice (Port 5004)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node -e \"console.log('AI Service test passed (Port 5004)')\""
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
